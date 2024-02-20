@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  postgres:
+    container_name: clickclickclick-postgres
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: create_club_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    logging:
+      driver: none
+
+  django:
+    container_name: clickclickclick-django
+    build: .
+    volumes:
+      - ./src:/src:rw
+      - ./.env:/src/core/.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    environment:
+      PROCESS: DJANGO
+      test: "pytest -v --cov . --cov-report term-missing
+      --cov-fail-under=90 --flake8 --mypy -n 4 --no-migrations
+      --reuse-db -W error
+      -W ignore::ResourceWarning -W ignore::DeprecationWarning
+      -W ignore::UserWarning -W ignore::RuntimeWarning"
+      makemigrations: python manage.py makemigrations
+      migrate: python manage.py migrate
+      makemessages: python manage.py makemessages
+      compilemessages: python manage.py compilemessages
+      outdated: pip list --outdated --format=columns
+      bandit: bandit -r . --exclude tests
+      mypy: mypy .
+      flake8: flake8 .
+      check: python manage.py check --deploy
+      shell: python manage.py shell_plus
+
+  rabbitmq:
+    container_name: clickclickclick-rabbitmq
+    image: rabbitmq:3.8-alpine
+    environment:
+      - RABBITMQ_DEFAULT_VHOST=vhost
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=pass
+    logging:
+      driver: none
+
+  celery:
+    container_name: clickclickclick-celery
+    build: .
+    volumes:
+      - ./src:/src:rw
+      - ./.env:/src/core/.env
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      PROCESS: DEV_CELERY
+
+
+volumes:
+  postgres_data:
