@@ -29,7 +29,7 @@ DEBUG: bool = env.bool(var="DEBUG")
 LOCAL: bool = env.bool(var="LOCAL", default=True)
 ALLOWED_HOSTS: Tuple = (
     "*",
-    "kuryltai.kz"
+    "24.144.91.228"
 )
 ADMIN_URL = env.str(var="DJANGO_ADMIN_URL")
 HOST = env.str(var="HOST", default='')
