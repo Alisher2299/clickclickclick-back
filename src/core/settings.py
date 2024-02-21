@@ -33,6 +33,11 @@ ALLOWED_HOSTS: Tuple = (
     "clickclickclick.kz",
     "www.clickclickclick.kz",
 )
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://clickclickclick.kz',
+]
+
 ADMIN_URL = env.str(var="DJANGO_ADMIN_URL")
 HOST = env.str(var="HOST", default='')
 ROOT_URLCONF: str = "core.urls"
