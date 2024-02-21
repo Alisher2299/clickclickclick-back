@@ -29,7 +29,9 @@ DEBUG: bool = env.bool(var="DEBUG")
 LOCAL: bool = env.bool(var="LOCAL", default=True)
 ALLOWED_HOSTS: Tuple = (
     "*",
-    "164.92.179.32"
+    "164.92.179.32",
+    "clickclickclick.kz",
+    "www.clickclickclick.kz",
 )
 ADMIN_URL = env.str(var="DJANGO_ADMIN_URL")
 HOST = env.str(var="HOST", default='')
